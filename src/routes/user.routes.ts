@@ -29,7 +29,7 @@ userRoute.delete('/users/:id', new UserController().deleteUser)
 
 // *********************** ROTAS DAS TRANSAÇÕES ************************
 
-userRoute.post('/users/:userId/transactions', [userValidator],new TransactionsController().createTransactions);
+userRoute.post('/users/:userId/transactions', new TransactionsController().createTransactions);
 
 userRoute.get('/users/:userId/transactions/:id', [userValidator], new TransactionsController().getIdandTransactions);
 

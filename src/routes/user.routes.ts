@@ -31,12 +31,12 @@ userRoute.delete('/users/:id', new UserController().deleteUser)
 
 userRoute.post('/users/:userId/transactions', new TransactionsController().createTransactions);
 
-userRoute.get('/users/:userId/transactions/:id', [userValidator], new TransactionsController().getIdandTransactions);
+userRoute.get('/users/:userId/transactions/:id', new TransactionsController().getIdandTransactions);
 
-userRoute.get('/users/:userId/transactions', [userValidator], new TransactionsController().resultAllTransactionsByUser);
+userRoute.get('/users/:userId/transactions', new TransactionsController().resultAllTransactionsByUser);
 
-userRoute.put('/users/:userId/transactions/:id', [userValidator], new TransactionsController().editTransactions);
+userRoute.put('/users/:userId/transactions/:id', new TransactionsController().editTransactions);
 
-userRoute.delete('/users/:userId/transactions/:id', [userValidator], new TransactionsController().deleteTransactions)
+userRoute.delete('/users/:userId/transactions/:id', new TransactionsController().deleteTransactions)
 
 export {userRoute};

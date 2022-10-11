@@ -116,7 +116,7 @@ export class TransactionsController {
 
         try {
 
-            const {id, userId} = request.params;
+            const {userId} = request.params;
             const {type, title} = request.query;
 
             let user = userArray.find(user => user.id == userId)

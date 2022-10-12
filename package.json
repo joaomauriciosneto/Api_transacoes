@@ -7,7 +7,8 @@
     "start": "node ./build/main.js",
     "dev": "ts-node-dev --respawn --transpile-only ./src/main.ts",
     "dev:debug": "ts-node-dev --inspect --respawn --transpile-only ./src/main.ts",
-    "postinstall": "npx tsc"
+    "build": "tsc",
+    "postinstall": "npm run build"
   },
   "keywords": [],
   "author": "",

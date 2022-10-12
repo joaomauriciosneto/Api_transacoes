@@ -1,13 +1,16 @@
 import express from "express";
 import { userRoute } from "./routes/user.routes";
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
-const PORT: number = 3333;
+const DOOR = process.env.PORT
 
 app.use(express.json());
 app.use('/', userRoute);
 
-app.listen(PORT, () => {
-    console.log(`Server started on port ${PORT}`)
+app.listen(DOOR, () => {
+    console.log(`Server started on port ${DOOR}`)
 })
 

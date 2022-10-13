@@ -1,8 +1,6 @@
-import { UserController } from "./user.controller";
 import { Request, Response } from "express";
 import { Transactions } from "../models/Transactions";
 import { userArray } from "../data/userList";
-import { userRoute } from "../routes/user.routes";
 
 export class TransactionsController {
 
@@ -42,7 +40,7 @@ export class TransactionsController {
             }
 
             const transactions = new Transactions(title, value, type);
-            const user = userArray.find(user => user.id == userId )
+            const user = userArray.find(user => user.id == userId );
 
             if(!user) {
                 return response.status(400).send({
@@ -252,9 +250,11 @@ export class TransactionsController {
                 })
             }
 
-            let transacitons = user.transactions?.findIndex(transaction => transaction.id == id)
+            const transacitons = user.transactions
+            ? user.transactions.findIndex(user => user.id == id)
+            : -1;
 
-            if(!transacitons) {
+            if(transacitons < 0) {
                 return response.status(404).send({
                     ok: false,
                     message: 'Tranasactions not found!'

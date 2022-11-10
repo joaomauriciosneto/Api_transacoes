@@ -14,14 +14,15 @@ const userRoute = Router();
 
 //******************** ROTAS DO USUÁRIO *******************************
 
-userRoute.post('/users', [cpfValidateMiddleware, cpfExistsMiddleware], new UserController().createUser);
+userRoute.post('/users', new UserController().createUser);
 
 userRoute.get('/users', new UserController().listUserByAtributes);
+
+userRoute.get('/users/all', new UserController().list);
 
 userRoute.get('/users/:id', new UserController().listUsertById);
 
 // userRoute.get('/users/all', new UserController().listAllUsers);
-userRoute.get('/users/all', new UserController().list);
 
 userRoute.put('/users/:id', new UserController().editUser);
 

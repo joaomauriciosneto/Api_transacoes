@@ -1,11 +1,12 @@
-import { Request, Response } from "express";
+import { query, Request, Response } from "express";
 import { userArray } from "../data/userList";
+import { dbConnection } from "../database/pg.database";
 import { User } from "../models/User";
 
 export class UserController {
 
     // POST
-    public createUser(request: Request, response: Response) {
+    public async createUser(request: Request, response: Response) {
         
         try {
 
@@ -40,14 +41,18 @@ export class UserController {
             }
 
             const users = new User(name, cpf, email, age)
-            userArray.push(users)
+            // userArray.push(users)
 
-            console.log(userArray)
+            const query = `insert into transactions."user" (id_user, "name", cpf, email, age) values ('${users.id}', '${users.name}', ${users.cpf}, '${users.email}', ${users.age})`;
+
+            const result = await dbConnection.query(query);
+
+            const volta = await dbConnection.query(`select * from transactions."user" where id_user = '${users.id}'`)
 
             return response.status(200).send({
                 ok: true,
                 message: 'User registered successfully!!',
-                data: users
+                data: volta.rows
             })
             
         } catch (error: any) {
@@ -59,20 +64,21 @@ export class UserController {
 
         }
 
-    public listAllUsers(request: Request, response: Response) {
+    public async listAllUsers(request: Request, response: Response) {
 
         try {
 
-            let userList = userArray;
+            // let userList = userArray;
 
-            let userListReturn = userList.map(user => {
-                return user.getUsers();
-            })
+            // let userListReturn = userList.map(user => {
+            //     return user.getUsers();
+            // })
+
+            // const result = await dbConnection.query(`select * from transactions."user"`)            
 
             return response.status(200).send({
                 ok: true,
-                message: 'List off all users!',
-                data: userListReturn
+                message: 'List off all users!'
             })
             
             
@@ -174,27 +180,46 @@ export class UserController {
         
     }
 
-    public editUser(request: Request, response: Response) {
+    public async editUser(request: Request, response: Response) {
 
         try {
             
             const {id} = request.params;
             const {name, email, cpf, age} = request.body;
 
-            const idUser = userArray.find(user => user.id == id)
+            const query = await dbConnection.query(`select * from transactions."user" where id_user = '${id}'`);
 
-            if(!idUser) {
-                return undefined
+            if(query.rowCount <= 0) {
+                return response.status(404).send({
+                    ok: false,
+                    message: 'User not found!'
+                })
             }
 
-            idUser.name = name;
-            idUser.cpf = cpf;
-            idUser.email = email;
-            idUser.age = age;      
+            const result = await dbConnection.query(`update transactions."user" set name = '${name}', email = '${email}', cpf = ${cpf}, age = ${age} where id_user = '${id}'`);
+
+            // const idUser = userArray.find(user => user.id == id)
+
+            // if(!idUser) {
+            //     return undefined
+            // }
+
+            // idUser.name = name;
+            // idUser.cpf = cpf;
+            // idUser.email = email;
+            // idUser.age = age;      
+
+            const user = query.rows[0];
+
+            user.name = name;
+            user.email = email;
+            user.cpf = cpf;
+            user.age = age;
             
             return response.status(200).send({
                 ok: true,
-                message: 'User successfully updated!'
+                message: 'User successfully updated!',
+                data: user
             })
             
         } catch (error: any) {
@@ -207,22 +232,35 @@ export class UserController {
         }
     }
 
-    public deleteUser(request: Request, response: Response) {
+    public async deleteUser(request: Request, response: Response) {
 
         try {
 
             const {id} = request.params;
 
-            let userList = userArray.findIndex(user => user.id == id)
+            const query = await dbConnection.query(`select * from transactions."user" where id_user = '${id}'`);
 
-            if(!userList) {
+            if(query.rowCount <= 0) {
                 return response.status(404).send({
                     ok: false,
                     message: 'User not found!'
                 })
             }
 
-            userArray.splice(userList, 1)
+            const result = await dbConnection.query(`delete from transactions."user" where id_user = '${id}'`);
+
+            // let userList = userArray.findIndex(user => user.id == id)
+
+            // if(!userList) {
+            //     return response.status(404).send({
+            //         ok: false,
+            //         message: 'User not found!'
+            //     })
+            // }
+
+            // userArray.splice(userList, 1)
+
+            
 
             return response.status(200).send({
                 ok: true,
@@ -243,20 +281,22 @@ export class UserController {
         return userArray.find(item => item.cpf == cpf)
     }
 
-    public list(request: Request, response: Response) {
+    public async list(request: Request, response: Response) {
 
         try {
 
-            let userList = userArray;
+            // let userList = userArray;
 
-            let userListReturn = userList.map(user => {
-                return user.getUsers();
-            })
+            // let userListReturn = userList.map(user => {
+            //     return user.getUsers();
+            // })
+
+            const result = await dbConnection.query(`select * from transactions."user"`)
 
             return response.status(200).send({
                 ok: true,
                 message: 'List off all users!',
-                data: userListReturn
+                data: result
             })
             
             
